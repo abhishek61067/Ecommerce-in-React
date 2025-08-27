@@ -24,6 +24,7 @@ import { useGetProductDetail } from "../../services/products";
 import { Star, ShoppingCart } from "lucide-react";
 import { primary, shadow } from "@/constants";
 import { main } from "framer-motion/client";
+import Tilt from "react-parallax-tilt";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -75,6 +76,10 @@ const ProductDetail = () => {
                     ? `2px solid ${primary}`
                     : "1px solid #E2E8F0"
                 }
+                transition={"transform 0.25s"}
+                _hover={{
+                  transform: "scale(1.05) rotate(5deg)",
+                }}
                 onClick={() => setSelectedImage(img)}
               />
             ))}
@@ -83,13 +88,23 @@ const ProductDetail = () => {
 
         {/* Main Image */}
         <GridItem>
-          <Image
-            src={mainImage}
-            alt={title}
-            w="100%"
-            h="400px"
-            objectFit="cover"
-          />
+          <Tilt
+            glareEnable={true}
+            glareMaxOpacity={0.0}
+            scale={1.5}
+            transitionSpeed={1500}
+            tiltMaxAngleX={30}
+            tiltMaxAngleY={40}
+            className="w-[300px]"
+          >
+            <Image
+              src={mainImage}
+              alt={title}
+              w="100%"
+              h="400px"
+              objectFit="cover"
+            />
+          </Tilt>
         </GridItem>
 
         {/* Details */}
