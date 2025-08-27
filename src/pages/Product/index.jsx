@@ -19,9 +19,11 @@ import {
   Spinner,
   Spacer,
   SimpleGrid,
+  Badge,
 } from "@chakra-ui/react";
 import { Search } from "lucide-react";
 import { useGetProductList } from "../../services/products";
+import { Link } from "react-router-dom";
 
 const getPageNumbers = (current, total) => {
   const delta = 1; // pages around current
@@ -144,43 +146,92 @@ const ProductList = () => {
             <Card
               key={product.id}
               maxW="sm"
-              bg={"bg"}
+              bg={useColorModeValue("white", "gray.800")}
               borderRadius="2xl"
-              boxShadow="lg"
+              boxShadow="0 8px 20px rgba(112, 129, 129, 0.25)"
+              border="2px solid transparent"
+              role="group" // ✅ important for group hover
+              transition="all 0.4s ease"
               _hover={{
-                transform: "translateY(-5px)",
-                boxShadow: "0 8px 30px rgba(255, 84, 152, 0.4)",
+                transform: "translateY(-8px)",
+                boxShadow: "0 12px 40px rgba(255, 84, 152, 0.4)",
               }}
-              transition="all 0.3s"
             >
               <CardBody>
-                <Image
-                  src={product.thumbnail}
-                  alt={product.title}
+                {/* Discount coupon badge */}
+                <Badge
+                  position="absolute"
+                  top={2}
+                  right={2}
+                  colorScheme="brand"
+                  borderRadius="full"
+                  px={3}
+                  py={1}
+                  fontSize="xs"
+                  shadow="md"
+                >
+                  10% OFF
+                </Badge>
+                <Box
+                  overflow="hidden"
                   borderRadius="lg"
-                  w="100%"
-                  h="200px"
-                  objectFit="cover"
-                  mb={4}
-                />
-                <Stack spacing={3}>
-                  <Heading size="md" color={"primary"}>
+                  transition="transform 0.4s ease"
+                  _groupHover={{
+                    transform: "translateY(-40px) scale(1.25) rotate(10deg)",
+                  }} // ✅ image lift + zoom
+                >
+                  <Image
+                    src={product.thumbnail}
+                    alt={product.title}
+                    w="100%"
+                    h="200px"
+                    objectFit="cover"
+                  />
+                </Box>
+
+                <Stack spacing={2} mt={4}>
+                  <Heading size="sm" color={"primary"}>
                     {product.title}
                   </Heading>
                   <Text noOfLines={2} color="muted" fontSize="sm">
                     {product.description}
                   </Text>
-                  <Text fontWeight="bold" color="brand.600" fontSize="lg">
-                    ${product.price}
-                  </Text>
+
+                  {/* Price section */}
+                  <HStack spacing={3} align="center">
+                    {/* Discounted price */}
+                    <Badge
+                      colorScheme="pink" // or "brand"
+                      borderRadius="full"
+                      px={4}
+                      py={2}
+                      width="fit-content"
+                      fontSize="md"
+                      fontWeight="bold"
+                    >
+                      ${(product.price * 0.9).toFixed(2)} {/* ✅ 10% off */}
+                    </Badge>
+
+                    {/* Original price */}
+                    <Text
+                      fontSize="lg"
+                      color="gray.500"
+                      textDecoration="line-through"
+                    >
+                      ${product.price}
+                    </Text>
+                  </HStack>
                 </Stack>
               </CardBody>
               <CardFooter>
                 <Button
+                  as={Link}
+                  to={`/products/${product.id}`}
                   flex={1}
                   bg="primary"
                   color="white"
                   _hover={{ bg: "primary.900", boxShadow: "md" }}
+                  rounded={"full"}
                 >
                   View Details
                 </Button>
@@ -195,7 +246,7 @@ const ProductList = () => {
           {/* Previous button */}
           <Button
             size={{ base: "xs", sm: "sm", md: "md" }}
-            onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+            onClick={() => setPage((prev) => prev - 1)}
             isDisabled={page === 1}
             colorScheme="brand"
           >
@@ -227,11 +278,7 @@ const ProductList = () => {
           {/* Next button */}
           <Button
             size={{ base: "xs", sm: "sm", md: "md" }}
-            onClick={() =>
-              setPage((prev) =>
-                prev < Math.ceil(data.total / limit) ? prev + 1 : prev
-              )
-            }
+            onClick={() => setPage((prev) => prev + 1)}
             isDisabled={page === Math.ceil(data.total / limit)}
             colorScheme="brand"
           >

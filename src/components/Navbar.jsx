@@ -1,5 +1,5 @@
-// components/Navbar.tsx
-"use client"; // if using Next.js 13+ app dir
+// components/Navbar.jsx
+"use client";
 import React from "react";
 import {
   Box,
@@ -7,14 +7,24 @@ import {
   Link,
   IconButton,
   useColorMode,
-  useColorModeValue,
   Spacer,
+  Badge,
+  Text,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from "@chakra-ui/react";
-import { Sun, Moon } from "lucide-react";
+import { Sun, Moon, ShoppingCart } from "lucide-react";
 import { Link as RouterLink } from "react-router-dom";
+import { useCartStore } from "@/store/cartStore";
 
 const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
+
+  // Get cart items from store
+  const cart = useCartStore((state) => state.cart);
+  const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
     <Box
@@ -54,6 +64,31 @@ const Navbar = () => {
         </HStack>
 
         <Spacer />
+
+        {/* Cart Icon with Badge */}
+        <Box position="relative">
+          <IconButton
+            aria-label="Cart"
+            icon={<ShoppingCart size={20} />}
+            variant="ghost"
+            as={RouterLink}
+            to="/cart" // navigate to cart page
+          />
+          {totalItems > 0 && (
+            <Badge
+              position="absolute"
+              top="-1"
+              right="-1"
+              bg="red.500"
+              color="white"
+              rounded="full"
+              fontSize="0.7rem"
+              px={2}
+            >
+              {totalItems}
+            </Badge>
+          )}
+        </Box>
 
         {/* Dark/Light mode toggle */}
         <IconButton

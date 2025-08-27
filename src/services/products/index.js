@@ -6,7 +6,7 @@ const useGetProductList = (
   sortBy = "title",
   order = "asc",
   page = 1,
-  limit = 10
+  limit = 200
 ) => {
   const skip = (page - 1) * limit;
 
@@ -22,4 +22,14 @@ const useGetProductList = (
   });
 };
 
-export { useGetProductList };
+const useGetProductDetail = (id) => {
+  return useQuery({
+    queryKey: ["product", id],
+    queryFn: async () => {
+      const res = await AxiosInstance.get(`products/${id}`);
+      return res.data;
+    },
+  });
+};
+
+export { useGetProductList, useGetProductDetail };

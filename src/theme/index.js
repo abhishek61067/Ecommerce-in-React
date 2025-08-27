@@ -30,7 +30,7 @@ export const theme = extendTheme({
       },
       text: {
         default: "gray.900", // light mode text
-        _dark: "gray.100", // dark mode text
+        _dark: "gray.200", // dark mode text
       },
       muted: {
         default: "gray.600",
