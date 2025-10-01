@@ -11,9 +11,13 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 app.use(cors());
 app.use(express.json());
 
+// create-checkout-session
 app.post("/create-checkout-session", async (req, res) => {
   try {
     const { cartItems } = req.body;
+
+    // store cartItems in DB or temporary memory (example uses mock orderId)
+    const orderId = Date.now(); // replace with DB storage & ID
 
     const line_items = cartItems.map((item) => ({
       price_data: {
@@ -27,15 +31,13 @@ app.post("/create-checkout-session", async (req, res) => {
       quantity: item.quantity,
     }));
 
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      line_items,
-      mode: "payment",
-      success_url: `http://localhost:5173/success?cart=${encodeURIComponent(
-        JSON.stringify(cartItems)
-      )}`,
-      cancel_url: "http://localhost:5173/cart",
-    });
+   const session = await stripe.checkout.sessions.create({
+  payment_method_types: ["card"],
+  line_items,
+  mode: "payment",
+  success_url: "http://localhost:5173/success",
+  cancel_url: "http://localhost:5173/cart",
+});
 
     res.json({ url: session.url });
   } catch (err) {

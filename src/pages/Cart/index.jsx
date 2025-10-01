@@ -55,7 +55,7 @@ const CartPage = () => {
   if (isLoading) {
     return (
       <Center h="70vh">
-        <Spinner colorScheme="brand" size="xl" />
+        <Spinner size="xl" color="brand.400" />
       </Center>
     );
   }

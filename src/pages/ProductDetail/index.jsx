@@ -18,6 +18,7 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   Badge,
+  Center,
 } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { useGetProductDetail } from "../../services/products";
@@ -26,6 +27,7 @@ import { primary, shadow } from "@/constants";
 import { main } from "framer-motion/client";
 import Tilt from "react-parallax-tilt";
 import { green } from "./../../constants/index";
+import SpinnerComponent from "./../../components/Spinner";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -39,11 +41,7 @@ const ProductDetail = () => {
   };
 
   if (isLoading) {
-    return (
-      <Box textAlign="center" py={20}>
-        <Spinner size="xl" />
-      </Box>
-    );
+    return <SpinnerComponent />;
   }
 
   if (isError || !data) {

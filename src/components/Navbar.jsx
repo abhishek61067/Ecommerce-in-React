@@ -14,6 +14,7 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  Image,
 } from "@chakra-ui/react";
 import { Sun, Moon, ShoppingCart } from "lucide-react";
 import { Link as RouterLink } from "react-router-dom";
@@ -39,29 +40,34 @@ const Navbar = () => {
     >
       <HStack spacing={8} alignItems="center">
         {/* Logo */}
-        <Box fontWeight="bold" fontSize="xl" color={"primary"}>
-          MyLogo
-        </Box>
-
+        <Link as={RouterLink} to="/" style={{ textDecoration: "none" }}>
+          <HStack spacing={1} cursor="pointer">
+            <Image src="/logo/ecommerce-logo.svg" boxSize="30px" />
+            <Text fontWeight="medium" fontSize="xl" color="primary">
+              E-Shop
+            </Text>
+          </HStack>
+        </Link>
 
         {/* Links */}
         <HStack spacing={4}>
           <Link
             as={RouterLink}
-            to={"/products"}
+            to={"/"}
             color={"text"}
             _hover={{ textDecoration: "underline" }}
+            fontWeight={"semibold"}
           >
-            Products
-
+            Home
           </Link>
           <Link
             as={RouterLink}
-            to={"/contact"}
+            to={"/products"}
             color={"text"}
             _hover={{ textDecoration: "underline" }}
+            fontWeight={"semibold"}
           >
-            Contact
+            Products
           </Link>
         </HStack>
 
@@ -81,7 +87,7 @@ const Navbar = () => {
               position="absolute"
               top="-1"
               right="-1"
-              bg="red.500"
+              bg="brand.300"
               color="white"
               rounded="full"
               fontSize="0.7rem"

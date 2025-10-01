@@ -47,10 +47,10 @@ const HomePage = () => {
   const navColor = useColorModeValue("white", "black");
 
   return (
-    <Box w="full" bgGradient="linear(to-b, gray.800, gray.900)" color="white">
+    <Box w="full" color="white">
       {/* Hero Section */}
       <Box
-        h="100vh"
+        h="90vh"
         display="flex"
         alignItems="center"
         justifyContent="center"
@@ -59,39 +59,40 @@ const HomePage = () => {
       >
         <VStack spacing={6}>
           <Text
-            bgGradient="linear(to-r, purple.400, blue.300)"
+            bgGradient="linear(to-r, brand.400, blue.300)"
             bgClip="text"
             fontSize={{ base: "2xl", md: "3xl" }}
             fontWeight="bold"
           >
-            One-stop Shopify Theme
+            One-stop Ecommerce Solution
           </Text>
           <Heading
             fontSize={{ base: "4xl", md: "6xl" }}
             fontWeight="extrabold"
             lineHeight="short"
+            color={useColorModeValue("gray.800", "gray.200")}
           >
             Prime Quality <br /> Premium Design
           </Heading>
-          <Text fontSize={{ base: "md", md: "lg" }} color="gray.300" maxW="2xl">
-            Craft a beautiful and high-converting Shopify store with Kalles
-            multipurpose theme. Optimized for eCommerce, speed and user
-            experiences.
+          <Text fontSize={{ base: "md", md: "lg" }} color="gray.500" maxW="2xl">
+            Craft a beautiful and high-converting Shopify store with this
+            tutorial. Optimized for eCommerce, speed and user experiences.
           </Text>
         </VStack>
       </Box>
 
       {/* Product Slider */}
       <Box px={6} py={12} maxW="7xl" mx="auto" position="relative">
-        <Heading
-          size="lg"
-          textAlign="center"
-          mb={8}
-          bgGradient="linear(to-r, pink.400, purple.400)"
+        <Text
+          bgGradient="linear(to-r, brand.400, blue.300)"
           bgClip="text"
+          fontSize={{ base: "2xl", md: "3xl" }}
+          fontWeight="bold"
+          textAlign={"center"}
+          mb={4}
         >
           Featured Products
-        </Heading>
+        </Text>
 
         {!isLoading && !isError && data?.products?.length > 0 && (
           <Swiper
@@ -217,7 +218,7 @@ const HomePage = () => {
           </Swiper>
         )}
 
-        <HStack mt={4} justify={"center"}>
+        <HStack mt={8} justify={"center"}>
           <Button
             as={Link}
             to={`/products/`}

@@ -1,34 +1,22 @@
-import React from "react";
-import { Box, Text, Image, Stack, Button } from "@chakra-ui/react";
+import { Box, Button, Heading, Text, VStack } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 
-export default function Success() {
-  const query = new URLSearchParams(window.location.search);
-  const cart = JSON.parse(query.get("cart") || "[]");
-
+export default function SuccessPage() {
   return (
-    <Box p={8}>
-      <Text fontSize="3xl" fontWeight="bold" mb={4}>
-        Payment Successful! 🎉
-      </Text>
-
-      {cart.map((item) => (
-        <Stack key={item.id} direction="row" spacing={4} mb={2}>
-          <Image boxSize="100px" src={item.thumbnail} alt={item.title} />
-          <Box>
-            <Text fontWeight="bold">{item.title}</Text>
-            <Text>Quantity: {item.quantity}</Text>
-            <Text>Price: ${item.price}</Text>
-          </Box>
-        </Stack>
-      ))}
-
+    <VStack height={"90vh"} justify={"center"} spacing={4}>
+      <Heading size={"2xl"}>🎉 Payment Successful!</Heading>
+      <Text>Thank you for your purchase!</Text>
       <Button
-        mt={6}
-        colorScheme="green"
-        onClick={() => (window.location.href = "/")}
+        mt={4}
+        as={Link}
+        to={`/products/`}
+        bg="primary"
+        color="white"
+        _hover={{ bg: "primary.900", boxShadow: "md" }}
+        rounded={"full"}
       >
-        Go to Home
-      </Button>
-    </Box>
+        Explore More Products
+      </Button>{" "}
+    </VStack>
   );
 }
