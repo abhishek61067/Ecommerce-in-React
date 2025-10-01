@@ -1,37 +1,50 @@
-// HomePage.tsx
+import React, { useRef, useState, useEffect } from "react";
 import {
   Box,
   Heading,
   Text,
   VStack,
+  IconButton,
   useColorModeValue,
-} from "@chakra-ui/react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
-import { useGetProductList } from "../../services/products";
-import Tilt from "react-parallax-tilt";
-import { dark } from "../../constants";
-
-// Import Swiper styles
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-
-// ✅ Import your product card dependencies (same as ProductList)
-import {
   Card,
   CardBody,
-  CardFooter,
-  Image,
-  Stack,
-  Button,
   HStack,
   Badge,
+  Image,
+  Stack,
+  CardFooter,
+  Button,
 } from "@chakra-ui/react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Autoplay } from "swiper/modules";
+import { useGetProductList } from "../../services/products";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+
+// Swiper styles
+import "swiper/css";
+import "swiper/css/navigation";
+import { dark } from "../../constants";
 import { Link } from "react-router-dom";
 
 const HomePage = () => {
   const { data, isLoading, isError } = useGetProductList("", "", "", 1, 10);
+
+  const prevRef = useRef(null);
+  const nextRef = useRef(null);
+  const [swiperInstance, setSwiperInstance] = useState(null);
+
+  // Assign refs to swiper navigation after components mount
+  useEffect(() => {
+    if (swiperInstance && prevRef.current && nextRef.current) {
+      swiperInstance.params.navigation.prevEl = prevRef.current;
+      swiperInstance.params.navigation.nextEl = nextRef.current;
+      swiperInstance.navigation.init();
+      swiperInstance.navigation.update();
+    }
+  }, [swiperInstance]);
+
+  const navBg = useColorModeValue("black", "white");
+  const navColor = useColorModeValue("white", "black");
 
   return (
     <Box w="full" bgGradient="linear(to-b, gray.800, gray.900)" color="white">
@@ -69,7 +82,7 @@ const HomePage = () => {
       </Box>
 
       {/* Product Slider */}
-      <Box px={6} py={12} maxW="7xl" mx="auto">
+      <Box px={6} py={12} maxW="7xl" mx="auto" position="relative">
         <Heading
           size="lg"
           textAlign="center"
@@ -82,147 +95,172 @@ const HomePage = () => {
 
         {!isLoading && !isError && data?.products?.length > 0 && (
           <Swiper
-            modules={[Navigation, Pagination, Autoplay]}
+            modules={[Navigation, Autoplay]}
             spaceBetween={20}
             slidesPerView={1}
-            navigation
-            pagination={{ clickable: true }}
             autoplay={{ delay: 3000 }}
             breakpoints={{
               640: { slidesPerView: 2 },
               1024: { slidesPerView: 4 },
             }}
+            onSwiper={setSwiperInstance}
           >
             {data.products.map((product) => (
               <SwiperSlide key={product.id}>
-                {/* ⬇️ Using the SAME card code as ProductList ⬇️ */}
-                <Tilt
-                  glareEnable={true}
-                  glareMaxOpacity={0.0}
-                  scale={1.1}
-                  transitionSpeed={2500}
-                  tiltMaxAngleX={25}
-                  tiltMaxAngleY={25}
-                  className="w-[300px]"
+                {/* Product Card */}
+                <Card
+                  key={product.id}
+                  maxW="sm"
+                  bg={useColorModeValue("white", dark)}
+                  borderRadius="2xl"
+                  boxShadow="0 8px 20px rgba(112, 129, 129, 0.25)"
+                  border="2px solid transparent"
+                  role="group" // ✅ important for group hover
                 >
-                  <Card
-                    zIndex={1000}
-                    maxW="sm"
-                    bg={useColorModeValue("white", dark)}
-                    borderRadius="2xl"
-                    boxShadow="0 8px 20px rgba(112, 129, 129, 0.25)"
-                    border="2px solid transparent"
-                    role="group"
-                    transition="all 0.4s ease"
-                    _hover={{
-                      transform: "translateY(-8px)",
-                      boxShadow: "0 12px 40px rgba(255, 84, 152, 0.4)",
-                    }}
-                  >
-                    <CardBody>
-                      {/* Discount + Category badges */}
-                      <HStack>
-                        <Badge
-                          position="absolute"
-                          top={2}
-                          left={2}
-                          colorScheme="brand"
-                          borderRadius="full"
-                          px={3}
-                          py={1}
-                          fontSize="9px"
-                          shadow="md"
-                        >
-                          {product.category}
-                        </Badge>
-                        <Badge
-                          position="absolute"
-                          top={2}
-                          right={2}
-                          colorScheme="green"
-                          borderRadius="full"
-                          px={3}
-                          py={1}
-                          fontSize="9px"
-                          shadow="md"
-                        >
-                          10% OFF
-                        </Badge>
-                      </HStack>
-
-                      <Box
-                        overflow="hidden"
-                        borderRadius="lg"
-                        transition="transform 0.4s ease"
-                        _groupHover={{
-                          transform:
-                            "translateY(-40px) scale(1.25) rotate(10deg)",
-                        }}
+                  <CardBody>
+                    {/* Discount coupon badge */}
+                    <HStack>
+                      <Badge
+                        position="absolute"
+                        top={2}
+                        left={2}
+                        colorScheme="brand"
+                        borderRadius="full"
+                        px={3}
+                        py={1}
+                        fontSize="9px"
+                        shadow="md"
                       >
-                        <Image
-                          src={product?.images?.[0]}
-                          alt={product.title}
-                          w="100%"
-                          h="200px"
-                          objectFit="cover"
-                        />
-                      </Box>
+                        {product.category}
+                      </Badge>
+                      <Badge
+                        position="absolute"
+                        top={2}
+                        right={2}
+                        colorScheme="blue"
+                        borderRadius="full"
+                        px={3}
+                        py={1}
+                        fontSize="9px"
+                        shadow="md"
+                      >
+                        10% OFF
+                      </Badge>
+                    </HStack>
+                    <Box
+                      overflow="hidden"
+                      borderRadius="lg"
+                      transition="transform 0.4s ease"
+                    >
+                      <Image
+                        src={product?.images?.[0]}
+                        alt={product.title}
+                        w="100%"
+                        h="200px"
+                        objectFit="cover"
+                      />
+                    </Box>
 
-                      <Stack spacing={2} mt={4}>
-                        <Heading
-                          size={{ base: "sm", "2xl": "md" }}
-                          color={"primary"}
+                    <Stack spacing={2} mt={4}>
+                      <Heading
+                        size={{ base: "sm", "2xl": "md" }}
+                        color={"primary"}
+                      >
+                        {product.title}
+                      </Heading>
+                      <Text noOfLines={2} color="muted" fontSize="sm">
+                        {product.description}
+                      </Text>
+
+                      {/* Price section */}
+                      <HStack mt={2} spacing={3} align="center">
+                        {/* Discounted price */}
+                        <Badge
+                          colorScheme="blue" // or "brand"
+                          borderRadius="full"
+                          px={4}
+                          py={2}
+                          width="fit-content"
+                          fontSize="md"
+                          fontWeight="bold"
                         >
-                          {product.title}
-                        </Heading>
-                        <Text noOfLines={2} color="muted" fontSize="sm">
-                          {product.description}
+                          ${(product.price * 0.9).toFixed(2)} {/* ✅ 10% off */}
+                        </Badge>
+
+                        {/* Original price */}
+                        <Text
+                          fontSize="lg"
+                          color="gray.500"
+                          textDecoration="line-through"
+                        >
+                          ${product.price}
                         </Text>
-
-                        {/* Price */}
-                        <HStack mt={2} spacing={3} align="center">
-                          <Badge
-                            colorScheme="green"
-                            borderRadius="full"
-                            px={4}
-                            py={2}
-                            width="fit-content"
-                            fontSize="md"
-                            fontWeight="bold"
-                          >
-                            ${(product.price * 0.9).toFixed(2)}
-                          </Badge>
-                          <Text
-                            fontSize="lg"
-                            color="gray.500"
-                            textDecoration="line-through"
-                          >
-                            ${product.price}
-                          </Text>
-                        </HStack>
-                      </Stack>
-                    </CardBody>
-
-                    <CardFooter>
-                      <Button
-                        as={Link}
-                        to={`/products/${product.id}`}
-                        flex={1}
-                        bg="primary"
-                        color="white"
-                        _hover={{ bg: "primary.900", boxShadow: "md" }}
-                        rounded={"full"}
-                      >
-                        View Details
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                </Tilt>
-                {/* ⬆️ Same card code as ProductList ⬆️ */}
+                      </HStack>
+                    </Stack>
+                  </CardBody>
+                  <CardFooter>
+                    <Button
+                      as={Link}
+                      to={`/products/${product.id}`}
+                      flex={1}
+                      bg="primary"
+                      color="white"
+                      _hover={{ bg: "primary.900", boxShadow: "md" }}
+                      rounded={"full"}
+                    >
+                      View Details
+                    </Button>
+                  </CardFooter>
+                </Card>
               </SwiperSlide>
             ))}
           </Swiper>
         )}
+
+        <HStack mt={4} justify={"center"}>
+          <Button
+            as={Link}
+            to={`/products/`}
+            bg="primary"
+            color="white"
+            _hover={{ bg: "primary.900", boxShadow: "md" }}
+            rounded={"full"}
+          >
+            Explore Products
+          </Button>{" "}
+        </HStack>
+
+        {/* Custom Navigation Buttons */}
+        <IconButton
+          ref={prevRef}
+          aria-label="Previous"
+          icon={<FaArrowLeft />}
+          position="absolute"
+          top="50%"
+          left="0"
+          transform="translateY(-50%)"
+          bg={navBg}
+          color={navColor}
+          rounded="full"
+          size="lg"
+          zIndex={10}
+          _hover={{ opacity: 0.8 }}
+        />
+        <IconButton
+          ref={nextRef}
+          aria-label="Next"
+          icon={<FaArrowRight />}
+          position="absolute"
+          top="50%"
+          right="0"
+          transform="translateY(-50%)"
+          bg={navBg}
+          color={navColor}
+          rounded="full"
+          size="lg"
+          zIndex={10}
+          _hover={{ opacity: 0.8 }}
+        />
       </Box>
     </Box>
   );
