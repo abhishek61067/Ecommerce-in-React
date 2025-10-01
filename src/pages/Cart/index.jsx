@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import {
   Box,
   Table,
@@ -20,11 +20,20 @@ import {
   Input,
   Divider,
   FormLabel,
+  Heading,
+  Tooltip,
 } from "@chakra-ui/react";
 import { useCartStore } from "@/store/cartStore";
 import { useGetProductList } from "../../services/products";
 import axios from "axios";
-import { green } from "./../../constants/index";
+import { dark, green } from "./../../constants/index";
+import {
+  Cross,
+  DeleteIcon,
+  SeparatorHorizontal,
+  SeparatorHorizontalIcon,
+  Trash,
+} from "lucide-react";
 
 const CartPage = () => {
   const { data, isLoading, isError, error } = useGetProductList();
@@ -46,7 +55,7 @@ const CartPage = () => {
   if (isLoading) {
     return (
       <Center h="70vh">
-        <Spinner size="xl" />
+        <Spinner colorScheme="brand" size="xl" />
       </Center>
     );
   }
@@ -127,74 +136,84 @@ const CartPage = () => {
             flex="2"
             maxH="500px"
             overflowY="auto"
-            bg={tableBgColor}
+            bg={useColorModeValue("gray.50", dark)}
             borderRadius="md"
-            border="1px"
-            borderColor={useColorModeValue("gray.200", "gray.700")}
+            rounded={"xl"}
+            shadow={"xl"}
           >
             <Table variant="simple">
-              <Thead position="sticky" top={0} bg={tableBgColor} zIndex={1}>
+              <Thead
+                position="sticky"
+                top={0}
+                bg={useColorModeValue("gray.50", dark)}
+                zIndex={1}
+              >
                 <Tr>
-                  <Th>Product</Th>
-                  <Th>Price</Th>
-                  <Th>Quantity</Th>
-                  <Th>Action</Th>
+                  <Th textAlign={"center"}>Product</Th>
+                  <Th textAlign={"center"}>Price</Th>
+                  <Th textAlign={"center"}>Quantity</Th>
+                  <Th textAlign={"center"}>Action</Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {cartItems.map((item) => (
-                  <Tr key={item.id}>
-                    <Td>
-                      <HStack>
-                        <Image
-                          boxSize="80px"
-                          objectFit="cover"
-                          src={item.thumbnail}
-                          alt={item.title}
-                        />
-                        <Text color={textColor}>{item.title}</Text>
-                      </HStack>
-                    </Td>
-                    <Td>
-                      <Text color={textColor}>${item.price}</Text>
-                    </Td>
-                    <Td>
-                      <HStack>
-                        <Button
-                          size="sm"
-                          onClick={() => decrement(item.id, item.quantity)}
-                        >
-                          -
-                        </Button>
-                        <Input
-                          value={item.quantity}
-                          size="sm"
-                          width="50px"
-                          textAlign="center"
-                          onChange={(e) => {
-                            const val = parseInt(e.target.value);
-                            if (!isNaN(val) && val > 0)
-                              updateQuantity(item.id, val);
-                          }}
-                        />
-                        <Button
-                          size="sm"
-                          onClick={() => increment(item.id, item.quantity)}
-                        >
-                          +
-                        </Button>
-                      </HStack>
-                    </Td>
-                    <Td>
-                      <Button
-                        colorScheme="red"
-                        size="sm"
-                        onClick={() => removeFromCart(item.id)}
-                      >
-                        Delete
-                      </Button>
-                    </Td>
-                  </Tr>
+                  <>
+                    <Tr key={item.id}>
+                      <Td>
+                        <HStack>
+                          <Image
+                            boxSize="80px"
+                            objectFit="cover"
+                            src={item.thumbnail}
+                            alt={item.title}
+                          />
+                          <Text color={textColor}>{item.title}</Text>
+                        </HStack>
+                      </Td>
+                      <Td>
+                        <Text color={textColor}>${item.price}</Text>
+                      </Td>
+                      <Td>
+                        <HStack>
+                          <Button
+                            size="sm"
+                            onClick={() => decrement(item.id, item.quantity)}
+                          >
+                            -
+                          </Button>
+                          <Input
+                            value={item.quantity}
+                            size="sm"
+                            width="50px"
+                            textAlign="center"
+                            onChange={(e) => {
+                              const val = parseInt(e.target.value);
+                              if (!isNaN(val) && val > 0)
+                                updateQuantity(item.id, val);
+                            }}
+                          />
+                          <Button
+                            size="sm"
+                            onClick={() => increment(item.id, item.quantity)}
+                          >
+                            +
+                          </Button>
+                        </HStack>
+                      </Td>
+                      <Td>
+                        <Tooltip label="Remove from cart">
+                          <Button
+                            colorScheme="brand"
+                            size="sm"
+                            onClick={() => removeFromCart(item.id)}
+                          >
+                            {/* lets add tooltip text */}
+                            <Trash size={"15px"} />
+                          </Button>
+                        </Tooltip>
+                      </Td>
+                    </Tr>
+                  </>
                 ))}
               </Tbody>
             </Table>
@@ -204,15 +223,15 @@ const CartPage = () => {
           <Box
             flex="1"
             p={4}
-            bg={bgColor}
+            bg={useColorModeValue("gray.50", dark)}
             borderRadius="md"
-            border="1px"
-            borderColor={useColorModeValue("gray.200", "gray.700")}
             position="sticky"
             top="20px"
             h="fit-content"
+            rounded={"xl"}
+            shadow={"xl"}
           >
-            <Text fontSize="xl" fontWeight="bold" mb={4} color={textColor}>
+            <Text fontSize="xl" fontWeight="bold" mb={4} color={"text"}>
               Order Summary
             </Text>
             <Text mb={4} fontSize="xs" color={total > 50 ? green : "gray.500"}>
@@ -248,12 +267,12 @@ const CartPage = () => {
 
             {/* Delivery Address Form: simplified */}
             <Box mt={4}>
-              <Text fontWeight="bold" mb={2} color={textColor}>
+              <Text fontSize="md" fontWeight="bold" mb={4} color={"text"}>
                 Delivery Address
               </Text>
               <VStack spacing={2} align="stretch">
                 <Box>
-                  <FormLabel color={textColor}>Full Name</FormLabel>
+                  <FormLabel color={textColor}>Full Name *</FormLabel>
                   <Input
                     value={address.name}
                     placeholder="John Doe"
@@ -263,7 +282,7 @@ const CartPage = () => {
                   />
                 </Box>
                 <Box>
-                  <FormLabel color={textColor}>Street Address</FormLabel>
+                  <FormLabel color={textColor}>Street Address *</FormLabel>
                   <Input
                     value={address.street}
                     placeholder="123 Main St"
@@ -277,7 +296,7 @@ const CartPage = () => {
 
             <Button
               mt={4}
-              colorScheme="green"
+              colorScheme="blue"
               width="100%"
               onClick={handleCheckout}
             >

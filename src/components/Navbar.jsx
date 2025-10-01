@@ -43,6 +43,7 @@ const Navbar = () => {
           MyLogo
         </Box>
 
+
         {/* Links */}
         <HStack spacing={4}>
           <Link
@@ -52,6 +53,7 @@ const Navbar = () => {
             _hover={{ textDecoration: "underline" }}
           >
             Products
+
           </Link>
           <Link
             as={RouterLink}

@@ -21,10 +21,11 @@ import {
 } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { useGetProductDetail } from "../../services/products";
-import { Star, ShoppingCart } from "lucide-react";
+import { Star, ShoppingCart, DollarSign } from "lucide-react";
 import { primary, shadow } from "@/constants";
 import { main } from "framer-motion/client";
 import Tilt from "react-parallax-tilt";
+import { green } from "./../../constants/index";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -53,11 +54,20 @@ const ProductDetail = () => {
     );
   }
 
-  const { title, description, price, rating, thumbnail, images, stock } = data;
+  const {
+    title,
+    description,
+    price,
+    rating,
+    thumbnail,
+    images,
+    stock,
+    category,
+  } = data;
   const mainImage = selectedImage || images[0]; // use first image if no selection
 
   return (
-    <Box maxW="6xl" mx="auto" py={10} px={6}>
+    <VStack h={"90vh"} maxW="6xl" mx="auto" py={10} px={6} justify="center">
       <Grid templateColumns={{ base: "1fr", md: "120px 1fr 1fr" }} gap={10}>
         {/* Thumbnails */}
         <GridItem>
@@ -110,7 +120,24 @@ const ProductDetail = () => {
         {/* Details */}
         <GridItem>
           <VStack align="flex-start" spacing={5}>
-            <Heading size="lg">{title}</Heading>
+            {/* gradient color */}
+            <Heading
+              size="lg"
+              // bgGradient={`linear(to-r, brand.300, #0cebc2ff ,text)`}
+              // bgClip="text"
+              color={"text"}
+            >
+              {title}
+            </Heading>
+            <Badge
+              colorScheme="brand"
+              px={3}
+              py={1}
+              rounded="full"
+              fontWeight="bold"
+            >
+              {category}
+            </Badge>
 
             <HStack spacing={1} align="center">
               {Array(5)
@@ -128,14 +155,13 @@ const ProductDetail = () => {
               </Text>
             </HStack>
 
-            <Text fontSize="md" color="gray.600">
+            <Text fontSize="md" color="gray.500">
               {description}
             </Text>
 
             {/* Stock Badge */}
             <Badge
-              color={stock > 0 ? "brand.600" : "red.600"}
-              bg={stock > 0 ? "brand.100" : "red.100"}
+              colorScheme="blue"
               px={3}
               py={1}
               rounded="md"
@@ -143,8 +169,7 @@ const ProductDetail = () => {
             >
               {stock > 0 ? `${stock} in stock` : "Out of stock"}
             </Badge>
-
-            <Text fontSize="2xl" fontWeight="bold" color={primary}>
+            <Text fontSize="2xl" fontWeight="bold" color={"blue.200"}>
               ${price}
             </Text>
 
@@ -157,22 +182,24 @@ const ProductDetail = () => {
                 max={stock || 100}
                 size="md"
                 isDisabled={stock === 0}
+                rounded={"full"}
               >
-                <NumberInputField
-                  borderColor={primary}
-                  _focus={{ borderColor: primary }}
-                />
+                <NumberInputField />
                 <NumberInputStepper>
-                  <NumberIncrementStepper borderColor={primary} />
-                  <NumberDecrementStepper borderColor={primary} />
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
                 </NumberInputStepper>
               </NumberInput>
 
               <Button
                 leftIcon={<ShoppingCart />}
                 isDisabled={stock === 0}
-                colorScheme="brand"
                 onClick={addToCartHandler}
+                bg={primary}
+                color={"white"}
+                _hover={{
+                  bg: "brand.600",
+                }}
               >
                 Add to Cart
               </Button>
@@ -180,7 +207,7 @@ const ProductDetail = () => {
           </VStack>
         </GridItem>
       </Grid>
-    </Box>
+    </VStack>
   );
 };
 

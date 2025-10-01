@@ -95,27 +95,27 @@ const ProductList = () => {
             setSortBy(newSort);
             setOrder(newOrder);
           }}
-          color="primary"
+          color="text"
           bg={useColorModeValue("white", "gray.700")}
           rounded="full"
           transition="all 0.3s ease"
           _focus={{
             borderColor: "pink.400",
-            boxShadow: "0 8px 30px rgba(255, 84, 152, 0.4)", // pink glow
+            boxShadow: "0 15px 30px rgba(255, 84, 152, 0.4)", // pink glow
             outline: "none",
           }}
         >
-          <option value="title-asc">Title: A → Z</option>
-          <option value="title-desc">Title: Z → A</option>
-          <option value="price-asc">Price: Low → High</option>
-          <option value="price-desc">Price: High → Low</option>
+          <option value="title-asc">Title - A - Z</option>
+          <option value="title-desc">Title - Z - A</option>
+          <option value="price-asc">Price - Low - High</option>
+          <option value="price-desc">Price - High - Low</option>
         </Select>
       </HStack>
 
       {/* States */}
       {isLoading && (
         <Center py={20}>
-          <Spinner size="xl" color="pink.400" />
+          <Spinner size="xl" color="brand.400" />
         </Center>
       )}
 
@@ -170,19 +170,34 @@ const ProductList = () => {
               >
                 <CardBody>
                   {/* Discount coupon badge */}
-                  <Badge
-                    position="absolute"
-                    top={2}
-                    right={2}
-                    colorScheme="brand"
-                    borderRadius="full"
-                    px={3}
-                    py={1}
-                    fontSize="xs"
-                    shadow="md"
-                  >
-                    10% OFF
-                  </Badge>
+                  <HStack>
+                    <Badge
+                      position="absolute"
+                      top={2}
+                      left={2}
+                      colorScheme="brand"
+                      borderRadius="full"
+                      px={3}
+                      py={1}
+                      fontSize="9px"
+                      shadow="md"
+                    >
+                      {product.category}
+                    </Badge>
+                    <Badge
+                      position="absolute"
+                      top={2}
+                      right={2}
+                      colorScheme="blue"
+                      borderRadius="full"
+                      px={3}
+                      py={1}
+                      fontSize="9px"
+                      shadow="md"
+                    >
+                      10% OFF
+                    </Badge>
+                  </HStack>
                   <Box
                     overflow="hidden"
                     borderRadius="lg"
@@ -201,7 +216,10 @@ const ProductList = () => {
                   </Box>
 
                   <Stack spacing={2} mt={4}>
-                    <Heading size="sm" color={"primary"}>
+                    <Heading
+                      size={{ base: "sm", "2xl": "md" }}
+                      color={"primary"}
+                    >
                       {product.title}
                     </Heading>
                     <Text noOfLines={2} color="muted" fontSize="sm">
@@ -209,10 +227,10 @@ const ProductList = () => {
                     </Text>
 
                     {/* Price section */}
-                    <HStack spacing={3} align="center">
+                    <HStack mt={2} spacing={3} align="center">
                       {/* Discounted price */}
                       <Badge
-                        colorScheme="pink" // or "brand"
+                        colorScheme="blue" // or "brand"
                         borderRadius="full"
                         px={4}
                         py={2}

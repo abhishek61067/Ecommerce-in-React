@@ -11,6 +11,10 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { router } from "./routes/index.jsx";
 import { ChakraProvider } from "@chakra-ui/react";
 import { theme } from "./theme/index";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+
 
 const queryClient = new QueryClient();
 

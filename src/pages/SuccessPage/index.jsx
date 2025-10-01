@@ -7,7 +7,7 @@ export default function Success() {
 
   return (
     <Box p={8}>
-      <Text fontSize="2xl" fontWeight="bold" mb={4}>
+      <Text fontSize="3xl" fontWeight="bold" mb={4}>
         Payment Successful! 🎉
       </Text>
 
