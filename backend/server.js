@@ -7,8 +7,30 @@ dotenv.config();
 
 const app = express();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const port = process.env.PORT || 5000;
+const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+const allowedOrigins = [
+  frontendUrl,
+  "http://localhost:5173",
+  "https://ecommerce-codeek-2026.web.app",
+  "https://www.ecommerce-codeek-2026.web.app",
+];
 
-app.use(cors());
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+app.options(/.*/, cors());
 app.use(express.json());
 
 // create-checkout-session
@@ -35,8 +57,8 @@ app.post("/create-checkout-session", async (req, res) => {
   payment_method_types: ["card"],
   line_items,
   mode: "payment",
-  success_url: "http://localhost:5173/success",
-  cancel_url: "http://localhost:5173/cart",
+  success_url: `${frontendUrl}/success`,
+  cancel_url: `${frontendUrl}/cart`,
 });
 
     res.json({ url: session.url });
@@ -46,4 +68,8 @@ app.post("/create-checkout-session", async (req, res) => {
   }
 });
 
-app.listen(5000, () => console.log("Server running on port 5000"));
+app.get("/", (req, res) => {
+  res.send("Backend is running 🚀");
+});
+
+app.listen(port, () => console.log(`Server running on port ${port}`));
