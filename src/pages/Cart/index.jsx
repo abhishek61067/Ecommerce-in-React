@@ -82,7 +82,7 @@ const CartPage = () => {
 
   const subtotal = cartItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
-    0
+    0,
   );
 
   const discount = subtotal * 0.1; // 10% discount
@@ -100,14 +100,14 @@ const CartPage = () => {
       return;
     }
 
+    const apiBaseUrl =
+      import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+
     try {
-      const res = await axios.post(
-        "http://localhost:5000/create-checkout-session",
-        {
-          cartItems,
-          deliveryAddress: address, // send only name and street for now
-        }
-      );
+      const res = await axios.post(`${apiBaseUrl}/create-checkout-session`, {
+        cartItems,
+        deliveryAddress: address, // send only name and street for now
+      });
 
       const { url } = res.data;
       window.location.href = url;
