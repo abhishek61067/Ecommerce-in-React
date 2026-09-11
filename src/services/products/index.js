@@ -19,6 +19,8 @@ const useGetProductList = (
       return response.data;
     },
     keepPreviousData: true, // ✅ smooth transition between pages
+    enabled:true,
+    staleTime: 1 * 60 * 1000, // ✅ cache for 1 minute
   });
 };
 
@@ -29,6 +31,8 @@ const useGetProductDetail = (id) => {
       const res = await AxiosInstance.get(`products/${id}`);
       return res.data;
     },
+    enabled: Boolean(id), // ✅ only fetch when id is available
+    staleTime: 1 * 60 * 1000, // ✅ cache for 1 minute
   });
 };
 
