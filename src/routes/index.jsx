@@ -1,10 +1,19 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Suspense, lazy } from "react";
+import { createBrowserRouter } from "react-router-dom";
 import Layout from "../layout";
-import ProductList from "../pages/Product";
-import ProductDetail from "../pages/ProductDetail";
-import Cart from "../pages/Cart";
-import SuccessPage from "../pages/SuccessPage";
-import HomePage from './../pages/Home/index';
+import Spinner from "../components/Spinner";
+
+const HomePage = lazy(() => import("../pages/Home"));
+const ProductList = lazy(() => import("../pages/Product"));
+const ProductDetail = lazy(() => import("../pages/ProductDetail"));
+const Cart = lazy(() => import("../pages/Cart"));
+const SuccessPage = lazy(() => import("../pages/SuccessPage"));
+
+const withSuspense = (Component) => (
+  <Suspense fallback={<Spinner />}>
+    <Component />
+  </Suspense>
+);
 
 export const router = createBrowserRouter([
   {
@@ -12,24 +21,24 @@ export const router = createBrowserRouter([
     element: <Layout />,
     children: [
       {
-        path: "/",
-        element: <HomePage/>,
+        index: true,
+        element: withSuspense(HomePage),
       },
       {
-        path: "/products",
-        element: <ProductList />,
+        path: "products",
+        element: withSuspense(ProductList),
       },
       {
-        path: "/products/:id",
-        element: <ProductDetail />,
+        path: "products/:id",
+        element: withSuspense(ProductDetail),
       },
       {
-        path: "/cart",
-        element: <Cart />,
+        path: "cart",
+        element: withSuspense(Cart),
       },
       {
-        path: "/success",
-        element: <SuccessPage />, // You need to create this component
+        path: "success",
+        element: withSuspense(SuccessPage),
       },
     ],
   },
