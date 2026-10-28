@@ -57,7 +57,7 @@ const ProductList = () => {
     sortBy,
     order,
     page,
-    limit
+    limit,
   );
 
   return (
@@ -212,6 +212,9 @@ const ProductList = () => {
                       w="100%"
                       h="200px"
                       objectFit="cover"
+                      fallbackSrc="https://placehold.co/200x200/f3f4f6/9ca3af?text=No+Image"
+                      loading="lazy"
+                      decoding="async"
                     />
                   </Box>
 
@@ -302,7 +305,7 @@ const ProductList = () => {
               >
                 {p}
               </Button>
-            )
+            ),
           )}
 
           {/* Next button */}
