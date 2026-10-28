@@ -1,8 +1,8 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { devtools, persist } from "zustand/middleware";
 
 export const useCartStore = create(
-  persist(
+  persist(devtools(
     (set) => ({
       cart: [], // array of {id, quantity}
 
@@ -32,6 +32,10 @@ export const useCartStore = create(
           ),
         })),
     }),
+  {
+    enabled: true, // enable devtools
+    name: "cart-store", // name of the store in devtools
+  }),
     {
       name: "cart-storage", // key in localStorage
     }
